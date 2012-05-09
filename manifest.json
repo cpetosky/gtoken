@@ -1,0 +1,12 @@
+{
+  "name": "GoldToken Enhancement Suite",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Fixes inefficiencies in goldtoken.com",
+  "content_scripts": [{
+    "matches": ["http://*.goldtoken.com/*"],
+    "js": ["jquery.js", "gtoken.js"],
+    "run_at": "document_end"
+  }],
+  "options_page": "options.html"
+}
