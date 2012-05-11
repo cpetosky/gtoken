@@ -1,6 +1,7 @@
 var globals = {};
 
 globals.sidebarBoxNames = [
+  'Chums Approval',
   'Chums List',
   'Current Poll',
   'Game Suggestion',
@@ -13,6 +14,7 @@ globals.sidebarBoxNames = [
 ];
 
 globals.mainBoxNames = [
+  'Game Invitations',
   'Options',
   'Opponent\'s turn',
   'Recently completed',

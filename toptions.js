@@ -80,6 +80,12 @@ var options = {
       omittedBoxes: ''
     },
     deleteProperties: ['removeSidebar']
+  }, {
+    version: '1.1.2',
+    appendProperties: {
+      mainBoxes: ['Game Invitations'],
+      sidebarBoxes: ['Chums Approval'],
+    }
   }]
 };
 
@@ -247,13 +253,25 @@ var checkSchema = function() {
   for (var i = 0; i < options.schema.length; ++i) {
     var schema = options.schema[i];
     if (loadSchema) {
-      for (var key in schema.properties) {
-        localStorage[key] = schema.properties[key];
+      if (schema.properties) {
+        for (var key in schema.properties) {
+          localStorage[key] = schema.properties[key];
+        }
       }
+
       if (schema.deleteProperties) {
         for (var i = 0; i < schema.deleteProperties.length; ++i) {
           localStorage.removeItem(schema.deleteProperties[i]);
         }        
+      }
+
+      if (schema.appendProperties) {
+        for (var prop in schema.appendProperties) {
+          var value = localStorage[prop];
+          var newValue = (value == '') ? [] : value.split(',');
+          localStorage[prop] = newValue.concat(schema.appendProperties[prop]).
+              join(',');
+        }
       }
       localStorage['version'] = schema.version;
     }
