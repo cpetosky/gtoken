@@ -4,15 +4,7 @@
 // https://github.com/frankkohlhepp/fancy-settings
 // License: LGPL v2.1
 */
-html, body {
-    height: 100%;
-}
 
-body {
-    font-family: "Lucida Grande", sans-serif;
-    line-height: 1.8;
-    color: black;
-}
 
 #sidebar {
     float: left;
@@ -32,10 +24,6 @@ body {
     transition: margin-bottom 0.1s ease;
 }
 
-html.searching #name {
-    margin-bottom: 18px;
-}
-
 #tab-container {
     margin-bottom: 20px;
 }
@@ -48,26 +36,14 @@ html.searching #name {
     cursor: pointer;
 }
 
-#tab-container .tab:hover,
-html.searching #tab-container .tab.active:hover {
+#tab-container .tab:hover {
     color: #777777;
-}
-
-html.searching #search-tab,
-html.searching #search-tab:hover {
-    color: #464e5a;
 }
 
 #tab-container .tab.active, html.searching #search-tab {
     border-left: 6px solid #464e5A;
     padding-left: 18px;
     color: #464e5a;
-}
-
-html.searching #tab-container .tab.active {
-    border-left: none;
-    padding-left: 24px;
-    color: #999999;
 }
 
 #content {
