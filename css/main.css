@@ -24,6 +24,7 @@ h1 {
 .center {
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
     display: block;
 }
 
@@ -87,9 +88,8 @@ html.searching .tab-content {
 .tab-name {
     background-color: #ffffff;
     border-bottom: 1px solid #eeeeee;
-    padding-top: 15px;
-    padding-bottom: 5px;
-    font-size: 1.5em;
+    padding-top: 27px;
+    padding-bottom: 15px;
     color: #303942;
     z-index: 1;
 }

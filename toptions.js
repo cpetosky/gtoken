@@ -125,7 +125,7 @@ var renderOptions = function(options, tab, target) {
   }
 
   target.empty();
-  target.append('<h2 class="tab-name">' + tab + '</h2>');
+  target.append('<h1 class="tab-name">' + tab + '</h1>');
 
   var container = $('<div class="tab-settings">');
 
