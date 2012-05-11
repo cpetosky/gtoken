@@ -9,11 +9,12 @@
   "description": "Power features for GoldToken.com",
   "content_scripts": [{
     "matches": ["http://*.goldtoken.com/*"],
-    "js": ["jquery.js", "gtoken.js"],
+    "js": [
+        "jquery-1.7.2.min.js", "jquery-ui-1.8.20.custom.min.js", "gtoken.js"],
     "run_at": "document_start"
   }],
   "background": {
-    "scripts": ["toptions.js", "background.js"]
+    "scripts": ["globals.js", "toptions.js", "background.js"]
   },
   "options_page": "options.html"
 }

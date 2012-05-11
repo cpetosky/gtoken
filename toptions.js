@@ -2,14 +2,6 @@ var options = {
   name: 'GoldToken Enhancement Suite',
   tabs: {
     'Basic settings': [{
-      name: 'Gamesheet sidebar',
-      settings: [{
-        name: 'sidebarBoxes',
-        type: 'text',
-        label: 'Boxes to keep:',
-        placeholder: '(None)',
-      }]
-    }, {
       name: 'Gamesheet misc.',
       settings: [{
         name: 'flattenOptions',
@@ -43,13 +35,30 @@ var options = {
         name: 'sidebarDescription',
         type: 'description',
         text: 'By default, the GoldToken gamesheet has a two-column layout. ' +
-              'You can either keep this layout, but specify boxes to keep, ' +
-              'or you can choose to collapse the gamesheet to a single column ' +
-              'and move some of the sidebar boxes to the main column.'
+              'Below are lists you edit to specify which content boxes ' +
+              'appear in each column. If you remove all boxes from the ' +
+              'second column, the gamesheet will collapse to a single-column ' +
+              'layout.'
       }, {
-        name: 'removeSidebar',
-        type: 'checkbox',
-        label: 'Collapse sidebar into main column'
+        type: 'connectList',
+        columns: [{
+          name: 'mainBoxes',
+          label: 'Main column'
+        }, {
+          name: 'sidebarBoxes',
+          label: 'Right column'
+        }, {
+          name: 'omittedBoxes',
+          label: 'Hidden boxes'
+        }],
+        connectWith: 'columnSortable',
+        renderModifier: function(value, target) {
+          if ($.inArray(value, globals.mainBoxNames) >= 0) {
+            target.addClass('ui-state-default');
+          } else if ($.inArray(value, globals.sidebarBoxNames) >= 0) {
+            target.addClass('ui-state-highlight');
+          }
+        }
       }]
     }]
   },
@@ -61,6 +70,16 @@ var options = {
       flattenOptions: true,
       maxIconHeight: 16
     }
+  }, {
+    version: '1.1',
+    properties: {
+      mainBoxes: "%(username)'s turn,Opponent's turn,Recently completed,Options",
+      sidebarBoxes: 'Chums List,Recent Photo,Current Poll,My Clubs,' +
+                    'Tips and Tricks,Tokens,Wiki Updates,' +
+                    'Open Game Invitations,Game Suggestion',
+      omittedBoxes: ''
+    },
+    deleteProperties: ['removeSidebar']
   }]
 };
 
@@ -83,6 +102,40 @@ var handleCheckbox = function(setting, settingContainer) {
   checkbox.change(function() {
     localStorage[setting.name] = checkbox.prop('checked');
   });
+};
+
+var handleConnectList = function(setting, settingContainer) {
+  for (var i = 0; i < setting.columns.length; ++i) {
+    var column = setting.columns[i];
+    var connector = setting.connectWith;
+    var list = $('<ul class="setting connect-list">').
+        addClass(connector).
+        sortable({
+          items: 'li:not(.ui-state-disabled)',
+          connectWith: '.' + setting.connectWith });
+    list.append($('<li class="ui-state-disabled">').text(column.label));
+    var data = localStorage[column.name].split(',');
+    for (var j = 0; j < data.length; ++j) {
+      var name = data[j];
+      if (name == '') {
+        continue;
+      }
+      var entry = $('<li>').text(name).attr('id', name);
+      if (setting.renderModifier) {
+        setting.renderModifier(data[j], entry);
+      }
+      list.append(entry);
+    }
+    settingContainer.append(list);
+
+    list.bind('sortupdate', makeConnectListHandler(column.name));
+  }
+}
+
+var makeConnectListHandler = function(name) {
+  return function() {
+    localStorage[name] = $(this).sortable('toArray').join(',');
+  };
 };
 
 var handleText = function(setting, settingContainer) {
@@ -120,6 +173,14 @@ var handleSlider = function(setting, settingContainer) {
     slider.change();
     settingContainer.append(display);
   }
+};
+
+var renderers = {
+  checkbox: handleCheckbox,
+  connectList: handleConnectList,
+  description: handleDescription,
+  slider: handleSlider,
+  text: handleText
 };
 
 var renderOptions = function() {
@@ -170,20 +231,7 @@ var renderTab = function(options, tab, target) {
       var settingContainer = $('<div class="setting container ' + setting.type + '">');
       bundle.append(settingContainer);
 
-      switch (setting.type) {
-        case 'description':
-          handleDescription(setting, settingContainer);
-          break;
-        case 'checkbox':
-          handleCheckbox(setting, settingContainer);
-          break;
-        case 'text':
-          handleText(setting, settingContainer);
-          break;
-        case 'slider':
-          handleSlider(setting, settingContainer);
-          break;
-      }
+      renderers[setting.type](setting, settingContainer);
     }
   }
 
@@ -201,6 +249,11 @@ var checkSchema = function() {
     if (loadSchema) {
       for (var key in schema.properties) {
         localStorage[key] = schema.properties[key];
+      }
+      if (schema.deleteProperties) {
+        for (var i = 0; i < schema.deleteProperties.length; ++i) {
+          localStorage.removeItem(schema.deleteProperties[i]);
+        }        
       }
       localStorage['version'] = schema.version;
     }
