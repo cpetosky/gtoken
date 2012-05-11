@@ -7,9 +7,8 @@
 
 
 #sidebar {
+    width: 200px;
     float: left;
-    height: 100%;
-    overflow-y: auto;
     overflow-x: hidden;
 }
 
@@ -47,17 +46,13 @@
 }
 
 #content {
-    position: relative;
-    width: 740px;
-    height: 100%;
+    margin-left: 200px;
     padding: 20px;
     padding-top: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
-.description {
-    width: 600px;
+.show {
+    display: block !important;
 }
 
 .tab-content {
@@ -66,4 +61,81 @@
 
 html.searching .tab-content {
     display: none !important;
+}
+
+.tab-name {
+    background-color: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    font-size: 1.5em;
+    color: #303942;
+    z-index: 1;
+}
+
+.setting.description {
+    max-width: 600px;
+}
+
+.setting.group {
+    margin-top: 15px;
+}
+
+.setting.group-name {
+    font-size: 1.2em;
+    vertical-align: top;
+}
+
+.setting.group-content {
+    margin-top: 1px;
+    margin-left: 18px;
+}
+
+.setting.bundle.list-box {
+    margin-bottom: 10px;
+}
+
+.setting.label.radio-buttons + .setting.container.radio-buttons {
+    margin-top: 3px;
+}
+
+.setting.label, .setting.element-label {
+    margin-right: 15px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.setting.label.checkbox, .setting.element-label {
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+.setting.label.checkbox {
+    position: relative;
+    top: 1px;
+}
+
+.setting.element.slider {
+    position: relative;
+    width: 150px;
+    top: 4px;
+}
+
+.setting.element.list-box {
+    display: block;
+    height: 100px;
+    width: 100%;
+}
+
+.setting.display.slider {
+    margin-left: 5px;
+    color: #666666;
+}
+
+#nothing-found {
+    display: none;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: lighter;
+    color: #999999;
 }
