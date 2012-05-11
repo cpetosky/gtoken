@@ -57,9 +57,10 @@ var main = function() {
     return;
   }
 
-  username = $('title').text().split("'")[0];
+  var title = $('title').text();
 
-  if (window.location.pathname.indexOf('gamesheet') >= 0) {
+  if (title.indexOf("Game Sheet") >= 0) {
+    username = title.split("'")[0];
     getAllBoxes();
     addBoxes($('#mainbar'), data.mainBoxes);
     addBoxes($('#sidebar'), data.sidebarBoxes);
