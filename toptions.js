@@ -4,17 +4,6 @@ var options = {
     'Basic settings': [{
       name: 'Gamesheet sidebar',
       settings: [{
-        name: 'sidebarDescription',
-        type: 'description',
-        text: 'By default, the GoldToken gamesheet has a two-column layout. ' +
-              'You can either keep this layout, but specify boxes to keep, ' +
-              'or you can choose to collapse the gamesheet to a single column ' +
-              'and move some of the sidebar boxes to the main column.'
-      }, {
-        name: 'removeSidebar',
-        type: 'checkbox',
-        label: 'Collapse sidebar into main column'
-      }, {
         name: 'sidebarBoxes',
         type: 'text',
         label: 'Boxes to keep:',
@@ -46,6 +35,21 @@ var options = {
             return value;
           }
         }
+      }]
+    }],
+    'Gamesheet layout': [{
+      name: 'Sidebar',
+      settings: [{
+        name: 'sidebarDescription',
+        type: 'description',
+        text: 'By default, the GoldToken gamesheet has a two-column layout. ' +
+              'You can either keep this layout, but specify boxes to keep, ' +
+              'or you can choose to collapse the gamesheet to a single column ' +
+              'and move some of the sidebar boxes to the main column.'
+      }, {
+        name: 'removeSidebar',
+        type: 'checkbox',
+        label: 'Collapse sidebar into main column'
       }]
     }]
   },
@@ -118,7 +122,23 @@ var handleSlider = function(setting, settingContainer) {
   }
 };
 
-var renderOptions = function(options, tab, target) {
+var renderOptions = function() {
+  renderTabList($('#tab-container'));
+  renderTab(options, 'Basic settings', $('#tabcontent'));
+}
+
+var renderTabList = function(target) {
+  for (var tabName in options.tabs) {
+    var tabEntry = $('<div class="tab">').text(tabName);
+    target.append(tabEntry);
+    tabEntry.click(function() {
+      renderTab(options, $(this).text(), $('#tabcontent'));
+    })
+  }
+}
+
+var renderTab = function(options, tab, target) {
+  target.empty();
   var tabOptions = options.tabs[tab];
   if (tabOptions === undefined) {
     throw new Error('Undefined tab: ' + tab);
@@ -168,6 +188,8 @@ var renderOptions = function(options, tab, target) {
   }
 
   target.append(container);
+  $('.tab.active').removeClass('active');
+  $('.tab:contains(' + tab + ')').addClass('active');
 }
 
 var checkSchema = function() {
@@ -191,7 +213,7 @@ var checkSchema = function() {
 
 $(document).ready(function() {
   checkSchema();
-  renderOptions(options, 'Basic settings', $('#tabcontent'));
+  renderOptions();
 
   $('#resetButton').click(function() {
     localStorage.clear();
