@@ -59,9 +59,11 @@ var main = function() {
 
   username = $('title').text().split("'")[0];
 
-  getAllBoxes();
-  addBoxes($('#mainbar'), data.mainBoxes);
-  addBoxes($('#sidebar'), data.sidebarBoxes);
+  if (window.location.pathname.indexOf('gamesheet') >= 0) {
+    getAllBoxes();
+    addBoxes($('#mainbar'), data.mainBoxes);
+    addBoxes($('#sidebar'), data.sidebarBoxes);
+  }
 
   if (data.maxIconHeight <= 0) {
     var targets = $("img[src*='pics/icon']");
