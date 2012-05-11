@@ -60,6 +60,64 @@ var options = {
   }]
 };
 
+var handleDescription = function(setting, settingContainer) {
+  settingContainer.append(
+      $('<p class="setting element description">').text(setting.text));
+};
+
+var handleCheckbox = function(setting, settingContainer) {
+  var id = setting.name + '_' + setting.type;
+  var checkbox = $('<input class="setting element checkbox" type="checkbox">').
+      attr('id', id).
+      prop('checked', localStorage[setting.name] == 'true');
+  settingContainer.append(checkbox);
+  var label = $('<label class="setting label checkbox">').
+      attr('for', id).
+      text(setting.label);
+  settingContainer.append(label);
+
+  checkbox.change(function() {
+    localStorage[setting.name] = checkbox.prop('checked');
+  });
+};
+
+var handleText = function(setting, settingContainer) {
+  settingContainer.append($('<label class="setting label text">').text(setting.label));
+  var textbox = $('<input class="setting element text" type="text">').
+      attr('placeholder', setting.placeholder).
+      val(localStorage[setting.name]);
+  settingContainer.append(textbox);
+
+  textbox.keyup(function() {
+    localStorage[setting.name] = textbox.val();
+  });
+};
+
+var handleSlider = function(setting, settingContainer) {
+  settingContainer.append(
+      $('<label class="setting label slider">').text(setting.label));
+  var slider = $('<input class="setting element slider" type="range">').
+      attr('max', setting.max).
+      attr('min', setting.min).
+      attr('step', setting.step).
+      val(localStorage[setting.name]);
+  settingContainer.append(slider);
+  var display = $('<span class="setting display slider">');
+  slider.change(function() {
+    localStorage[setting.name] = slider.val();
+    if (setting.displayModifier) {
+      display.html(setting.displayModifier(slider.val()));
+    } else {
+      display.text(slider.val());
+    }
+  });
+
+  if (setting.display) {
+    slider.change();
+    settingContainer.append(display);
+  }
+};
+
 var renderOptions = function(options, tab, target) {
   var tabOptions = options.tabs[tab];
   if (tabOptions === undefined) {
@@ -92,38 +150,18 @@ var renderOptions = function(options, tab, target) {
       var settingContainer = $('<div class="setting container ' + setting.type + '">');
       bundle.append(settingContainer);
 
-      var value = localStorage[setting.name];
       switch (setting.type) {
         case 'description':
-          settingContainer.append($('<p class="setting element description">').text(setting.text));
+          handleDescription(setting, settingContainer);
           break;
         case 'checkbox':
-          var id = setting.name + '_' + setting.type;
-          var checkbox = $('<input class="setting element checkbox" type="checkbox">').
-              attr('id', id).
-              prop('checked', value);
-          settingContainer.append(checkbox);
-          var label = $('<label class="setting label checkbox">').
-              attr('for', id).
-              text(setting.label);
-          settingContainer.append(label);
+          handleCheckbox(setting, settingContainer);
           break;
         case 'text':
-          settingContainer.append($('<label class="setting label text">').text(setting.label));
-          var textbox = $('<input class="setting element text" type="text">').
-              attr('placeholder', setting.placeholder).
-              val(value);
-          settingContainer.append(textbox);
+          handleText(setting, settingContainer);
           break;
         case 'slider':
-          settingContainer.append($('<label class="setting label slider">').text(setting.label));
-          var slider = $('<input class="setting element slider" type="range">').
-              attr('max', setting.max).
-              attr('min', setting.min).
-              attr('step', setting.step).
-              val(value);
-          settingContainer.append(slider);
-          settingContainer.append($('<span class="setting display slider">PLACEHOLDER</span>'));
+          handleSlider(setting, settingContainer);
           break;
       }
     }
@@ -132,21 +170,32 @@ var renderOptions = function(options, tab, target) {
   target.append(container);
 }
 
-var bootstrap = function() {
+var checkSchema = function() {
   // Check local version and init variables.
   var version = localStorage['version'];
-  if (version === undefined) {
-    for (var i = 0; i < options.schema.length; ++i) {
-      var schema = options.schema[i];
+  var loadSchema = version === undefined;
+  for (var i = 0; i < options.schema.length; ++i) {
+    var schema = options.schema[i];
+    if (loadSchema) {
       for (var key in schema.properties) {
         localStorage[key] = schema.properties[key];
       }
       localStorage['version'] = schema.version;
     }
+
+    if (version === schema.version) {
+      loadSchema = true;
+    }
   }
 }
 
 $(document).ready(function() {
-  bootstrap();
-  var content = renderOptions(options, 'Basic settings', $("#tabcontent"));
+  checkSchema();
+  renderOptions(options, 'Basic settings', $('#tabcontent'));
+
+  $('#resetButton').click(function() {
+    localStorage.clear();
+    checkSchema();
+    location.reload();
+  })
 })
