@@ -1,12 +1,19 @@
 {
   "name": "GoldToken Enhancement Suite",
+  "icons": {
+      "16": "icon_16.png",
+      "48": "icon_48.png",
+      "128": "icon_128.png" },
   "version": "1.0",
   "manifest_version": 2,
-  "description": "Fixes inefficiencies in goldtoken.com",
+  "description": "Power features for GoldToken.com",
   "content_scripts": [{
     "matches": ["http://*.goldtoken.com/*"],
     "js": ["jquery.js", "gtoken.js"],
-    "run_at": "document_end"
+    "run_at": "document_start"
   }],
+  "background": {
+    "scripts": ["toptions.js", "background.js"]
+  },
   "options_page": "options.html"
 }
