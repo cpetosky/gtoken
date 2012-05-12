@@ -23,7 +23,7 @@ var getAllBoxes = function() {
 
 var findBox = function(targetBox) {
   for (var box in allBoxes) {
-    if (box.indexOf(targetBox) >= 0) {
+    if (box.indexOf(targetBox) == 0) {
       return allBoxes[box];
     }
   }
